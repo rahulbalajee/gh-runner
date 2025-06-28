@@ -1,32 +1,18 @@
 name: Deploy
-on: [push, workflow_dispatch]
+on: workflow_dispatch
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Fetch code & checkout
-              uses: actions/checkout@v4
-            - name: Setup NodeJS
-              uses: actions/setup-node@v4
-            - name: Install dependencies, lint & test
-              run: |
-                npm install
-                npm ci
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        steps:
-            - name: Fetch code & checkout
-              uses: actions/checkout@v4
-            - name: Setup NodeJS
-              uses: actions/setup-node@v4
-            - name: Build app
-              run: |
-                npm install
-                npm run build
     deploy:
-        needs: build
         runs-on: ubuntu-latest
         steps:
+            - name: Output event data
+              run: echo "${{ toJSON(github.event) }}"
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Install dependencies & test
+              run: |
+                npm ci
+                npm run test
+            - name: Build app
+              run: npm run build
             - name: Deploy
               run: echo "Deploying..."
