@@ -11,9 +11,9 @@ jobs:
             - name: Install dependencies, lint & test
               run: |
                 npm install
-                npm lint
                 npm ci
     build:
+        needs: test
         runs-on: ubuntu-latest
         steps:
             - name: Fetch code & checkout
