@@ -9,9 +9,12 @@ jobs:
     steps:
       - name: Fetch code & do checkout 
         uses: actions/checkout@v4
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-      - name: Install deps & test
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install deps, lint & test
         run: |
           npm ci
           npm run lint
@@ -24,8 +27,11 @@ jobs:
     steps:
       - name: Fetch code & do checkout
         uses: actions/checkout@v4
-      - name: Setup env
-        uses: actions/setup-node@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install deps
         run: npm ci
       - name: Build app
